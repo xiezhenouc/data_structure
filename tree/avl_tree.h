@@ -140,6 +140,53 @@ void AVLTree<T>::destroy(AVLTreeNode<T> *&pnode)
 template<typename T>
 AVLTreeNode<T>* AVLTree<T>::insert(AVLTreeNode<T> *&pnode, T key)
 {
+    if(pnode == NULL)
+    {
+        //create node
+        pnode = new AVLTreeNode<T>(key, NULL, NULL);
+    }   
+    else if(key < pnode->key)
+    {
+        //left child tree
+        pnode->lchild = insert(pnode->lchild, key);
+        if(height(pnode->lchild) - height(pnode->rchild) == 2)
+        {
+            if(key < pnode->lchild->key)
+            {
+                pnode = right_rotation(pnode);
+            }
+            else
+            {
+                pnode = left_right_rotation(pnode);
+            }
+        }
+        
+    }      
+    else if(key > pnode->key)
+    { 
+        //right child tree
+        pnode->rchild = insert(pnode->rchild, key);
+        if(height(pnode->rchild) - height(pnode->lchild) == 2)
+        {
+            if(key < pnode->rchild->key)
+            {
+                pnode = right_left_rotation(pnode);
+            }
+            else
+            {
+                pnode = left_rotation(pnode);
+            }
+        }
+    }
+    else
+    {
+        //key == pnode->key 
+        //error
+        cout << "error" << endl;
+    }
+
+    pnode->height = max(height(pnode->lchild), height(pnode->rchild)) + 1;
+    return pnode;
 }
 
 template<typename T>

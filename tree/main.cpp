@@ -131,7 +131,20 @@ void test_right_left_rotation()
     p_cur_tree->root = p_cur_tree->right_left_rotation(p_cur_tree->root);
     cout << "after right_left_rotation" << endl;
     print_tree(p_cur_tree);
+}
 
+void test_insert()
+{
+    AVLTree<int> *p_cur_tree = new AVLTree<int>();
+    p_cur_tree->root = NULL;
+    int keys_set[] = {4, 5, 6, 3, 2, 8, 7, 0, 1};
+    
+    for(int i = 0; i < 9; i++)
+    {   
+        p_cur_tree->insert(p_cur_tree->root, keys_set[i]);
+    }
+    cout << "test insert" << endl;
+    print_tree(p_cur_tree);
 }
 
 int main()
@@ -145,6 +158,8 @@ int main()
     //test_left_right_rotation();
 
     //test_right_left_rotation();
+    
+    test_insert();
 
     return 0;
 }
