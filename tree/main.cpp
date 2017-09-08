@@ -133,7 +133,7 @@ void test_right_left_rotation()
     print_tree(p_cur_tree);
 }
 
-void test_insert()
+void test_insert_remove()
 {
     AVLTree<int> *p_cur_tree = new AVLTree<int>();
     p_cur_tree->root = NULL;
@@ -144,6 +144,10 @@ void test_insert()
         p_cur_tree->insert(p_cur_tree->root, keys_set[i]);
     }
     cout << "test insert" << endl;
+    print_tree(p_cur_tree);
+  
+    cout << "test remove" << endl;
+    p_cur_tree->remove(p_cur_tree->root, 5);
     print_tree(p_cur_tree);
 }
 
@@ -159,7 +163,7 @@ int main()
 
     //test_right_left_rotation();
     
-    test_insert();
+    test_insert_remove();
 
     return 0;
 }

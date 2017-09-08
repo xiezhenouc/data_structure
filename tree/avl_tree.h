@@ -151,10 +151,12 @@ AVLTreeNode<T>* AVLTree<T>::insert(AVLTreeNode<T> *&pnode, T key)
         pnode->lchild = insert(pnode->lchild, key);
         if(height(pnode->lchild) - height(pnode->rchild) == 2)
         {
+            // left left
             if(key < pnode->lchild->key)
             {
                 pnode = right_rotation(pnode);
             }
+            // left right
             else
             {
                 pnode = left_right_rotation(pnode);
@@ -168,10 +170,12 @@ AVLTreeNode<T>* AVLTree<T>::insert(AVLTreeNode<T> *&pnode, T key)
         pnode->rchild = insert(pnode->rchild, key);
         if(height(pnode->rchild) - height(pnode->lchild) == 2)
         {
+            // right left
             if(key < pnode->rchild->key)
             {
                 pnode = right_left_rotation(pnode);
             }
+            // right right
             else
             {
                 pnode = left_rotation(pnode);
@@ -192,6 +196,90 @@ AVLTreeNode<T>* AVLTree<T>::insert(AVLTreeNode<T> *&pnode, T key)
 template<typename T>
 AVLTreeNode<T>* AVLTree<T>::remove(AVLTreeNode<T> *&pnode, T key)
 {
+    if(pnode != NULL)
+    {
+        //find remove element
+        if(key == pnode->key)
+        {
+            // left child and right child both are not NULL
+            if(pnode->lchild != NULL && pnode->rchild != NULL)
+            {
+                // left child tree height > right child tree height
+                // pnode->key = left child tree maximum element
+                // delete left child tree maximum element
+                if(height(pnode->lchild) > height(pnode->rchild))
+                {
+                    AVLTreeNode<T>* ppre = maximum(pnode->lchild);
+                    pnode->key = ppre->key;
+                    pnode->lchild = remove(pnode->lchild, ppre->key);
+                }
+                // left child tree height < right child tree height
+                // pnode->key = right child tree minimum element
+                // delete right child tree minimum element
+                else
+                {
+                    AVLTreeNode<T>* psuc = minimum(pnode->rchild);
+                    pnode->key = psuc->key;
+                    pnode->rchild = remove(pnode->rchild, psuc->key);
+                }
+            }
+            // left child or right child is not NULL
+            else
+            {
+                AVLTreeNode<T> *ptemp = pnode;
+                if(pnode->lchild != NULL)
+                {
+                    pnode = pnode->lchild;
+                }
+                else if(pnode->rchild != NULL)
+                {
+                    pnode = pnode->rchild;
+                }
+                delete ptemp;
+                return NULL;
+            }
+        }
+        // go to right child tree
+        else if(key > pnode->key)
+        {
+            pnode->rchild = remove(pnode->rchild, key);
+            // remove results to not balance == add element results to not balance
+            if(height(pnode->lchild) - height(pnode->rchild) == 2)
+            {
+                // left and left 
+                if(height(pnode->lchild->lchild) > height(pnode->lchild->rchild))
+                {
+                    pnode = right_rotation(pnode);
+                }    
+                // left and right
+                else
+                {
+                    pnode = left_right_rotation(pnode);
+                }
+            }
+        }
+        // go to left child tree
+        else
+        {
+            pnode->lchild = remove(pnode->lchild, key);
+            // remove results to not balance == add element results to not balance
+            if(height(pnode->rchild) - height(pnode->lchild) == 2)
+            {
+                // right and left
+                if(height(pnode->rchild->lchild) > height(pnode->rchild->rchild))
+                {
+                    pnode = right_left_rotation(pnode);
+                }    
+                // right and right
+                else
+                {
+                    pnode = left_rotation(pnode);
+                }
+            }
+        }
+        return pnode;
+    }
+    return NULL;
 }
 
 template<typename T>
